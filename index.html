@@ -283,129 +283,263 @@
                 <button data-page="utilities">UTILITIES</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.0.2</div>
+                <div class="version">v1.1.0</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
             </div>
         </header>
 
-        <div class="dashboard-grid">
-            <div class="card">
-                <h3>Target Specifications</h3>
-                <div class="input-group">
-                    <label>NOMINAL VOLTAGE (V)</label>
-                    <div class="value-box">
-                        <input type="number" id="nominalVoltage" value="52" min="0" step="1">
-                        <span class="unit">(V)</span>
+        <!-- DASHBOARD PAGE -->
+        <div class="page" id="page-dashboard">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Target Specifications</h3>
+                    <div class="input-group">
+                        <label>NOMINAL VOLTAGE (V)</label>
+                        <div class="value-box">
+                            <input type="number" id="nominalVoltage" value="52" min="0" step="1">
+                            <span class="unit">(V)</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>MAX DISCHARGE (A)</label>
+                        <div class="value-box">
+                            <input type="number" id="maxDischarge" value="20" min="0" step="1" style="color: #2ecc71;">
+                            <span class="unit">/ 40A</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>CELL MODEL</label>
+                        <select id="cellModel">
+                            <option value="SAMSUNG 40T" selected>SAMSUNG 40T</option>
+                            <option value="Molicel INR‑21700‑P45B">Molicel INR‑21700‑P45B</option>
+                            <option value="Tenpower INR21700‑40TG">Tenpower INR21700‑40TG</option>
+                            <option value="Tenpower INR21700‑40XG">Tenpower INR21700‑40XG</option>
+                            <option value="Eve INR21700‑40PL">Eve INR21700‑40PL</option>
+                            <option value="Samsung 50G">Samsung 50G</option>
+                            <option value="Samsung INR21700 50E">Samsung INR21700 50E</option>
+                            <option value="LG INR21700M50LT">LG INR21700M50LT</option>
+                            <option value="Nitecore Li‑Ion 21700">Nitecore Li‑Ion 21700</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>CELL COUNT</label>
+                        <div class="value-box" id="cellCount">56</div>
+                    </div>
+                    <button class="btn-primary" style="background:#333; color:white;">CONFIGURATION DIAGRAM</button>
+                </div>
+
+                <div class="card">
+                    <h3>Pack Configuration</h3>
+                    <div class="config-box">
+                        <div class="config-input-group">
+                            <input type="number" id="seriesCount" value="14" min="1" max="99" step="1">
+                            <label>S</label>
+                        </div>
+                        <div class="config-input-group">
+                            <input type="number" id="parallelCount" value="4" min="1" max="99" step="1">
+                            <label>P</label>
+                        </div>
+                    </div>
+                    <div class="metrics-list">
+                        <li><span>Estimated Price:</span> <span id="estimatedPrice">€ ---</span></li>
+                        <li><span>Connector:</span> <span id="connector">XT60 / XT90</span></li>
+                        <li><span>Busbar:</span> <span id="busbar">0.20mm x 10mm</span></li>
+                        <li><span>Est. Range:</span> <span id="estRange">-- km</span></li>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>MAX DISCHARGE (A)</label>
-                    <div class="value-box">
-                        <input type="number" id="maxDischarge" value="20" min="0" step="1" style="color: #2ecc71;">
-                        <span class="unit">/ 40A</span>
+
+                <div class="card">
+                    <h3>Estimated Metrics</h3>
+                    <ul class="metrics-list">
+                        <li><span>Total Voltage:</span> <strong id="totalVoltage">51.8V</strong></li>
+                        <li><span>Total Capacity:</span> <strong id="totalCapacity">20Ah</strong></li>
+                        <li><span>Total Weight:</span> <strong id="totalWeight">3.92 Kg</strong></li>
+                        <li><span>Total Energy:</span> <strong id="totalEnergy">1036 Wh</strong></li>
+                        <li><span>Cycle Life:</span> <strong id="cycleLife">500</strong></li>
+                        <li><span>Volumetric Density:</span> <strong id="volumetricDensity">431 Wh/L</strong></li>
+                    </ul>
+                </div>
+
+                <div class="bottom-row">
+                    <div class="card">
+                        <h3>Voltage Drop Calculator</h3>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
+                            <div style="flex:1">
+                                <label>Wire Length (cm)</label>
+                                <div class="value-box">750</div>
+                            </div>
+                            <div style="flex:1">
+                                <label>Voltage Loss</label>
+                                <div class="value-box"><span class="highlight-value">0.52V</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Thermal Estimator</h3>
+                        <div
+                            style="height: 100px; background: #252525; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555;">
+                            [Grafik Alanı - Chart.js kullanılabilir]
+                        </div>
+                        <div style="text-align: right; margin-top: 10px;">
+                            <span style="color: var(--accent-orange);">Est. Temp Rise: 15°C</span>
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>CELL MODEL</label>
-                    <select id="cellModel">
-                        <option value="SAMSUNG 40T" selected>SAMSUNG 40T</option>
-                        <option value="Molicel INR‑21700‑P45B">Molicel INR‑21700‑P45B</option>
-                        <option value="Tenpower INR21700‑40TG">Tenpower INR21700‑40TG</option>
-                        <option value="Tenpower INR21700‑40XG">Tenpower INR21700‑40XG</option>
-                        <option value="Eve INR21700‑40PL">Eve INR21700‑40PL</option>
-                        <option value="Samsung 50G">Samsung 50G</option>
-                        <option value="Samsung INR21700 50E">Samsung INR21700 50E</option>
-                        <option value="LG INR21700M50LT">LG INR21700M50LT</option>
-                        <option value="Nitecore Li‑Ion 21700">Nitecore Li‑Ion 21700</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>CELL COUNT</label>
-                    <div class="value-box" id="cellCount">56</div>
-                </div>
-                <button class="btn-primary" style="background:#333; color:white;">CONFIGURATION DIAGRAM</button>
             </div>
 
-            <div class="card">
-                <h3>Pack Configuration</h3>
-                <div class="config-box">
-                    <div class="config-input-group">
-                        <input type="number" id="seriesCount" value="14" min="1" max="99" step="1">
-                        <label>S</label>
-                    </div>
-                    <div class="config-input-group">
-                        <input type="number" id="parallelCount" value="4" min="1" max="99" step="1">
-                        <label>P</label>
-                    </div>
-                </div>
-                <div class="metrics-list">
-                    <li><span>Estimated Price:</span> <span id="estimatedPrice">€ ---</span></li>
-                    <li><span>Connector:</span> <span id="connector">XT60 / XT90</span></li>
-                    <li><span>Busbar:</span> <span id="busbar">0.20mm x 10mm</span></li>
-                    <li><span>Est. Range:</span> <span id="estRange">-- km</span></li>
-                </div>
+            <div style="display: flex; gap: 20px; margin-top: 20px;">
+                <button class="btn-primary">SAVE DESIGN</button>
+                <button class="btn-primary" style="background:#444; color: white;">BMS WIZARD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK START PAGE -->
+    <div class="page" id="page-quickstart" style="display: none;">
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <h2 style="color: var(--accent-orange); margin-top: 0;">🚀 Quick Start Guide</h2>
+
+            <div style="margin: 30px 0;">
+                <h3>Step 1: Choose Your Cell Model</h3>
+                <p>Select from our database of high-quality 21700 cells. Each cell has different capacity, weight, and
+                    cycle life characteristics.</p>
             </div>
 
-            <div class="card">
-                <h3>Estimated Metrics</h3>
-                <ul class="metrics-list">
-                    <li><span>Total Voltage:</span> <strong id="totalVoltage">51.8V</strong></li>
-                    <li><span>Total Capacity:</span> <strong id="totalCapacity">20Ah</strong></li>
-                    <li><span>Total Weight:</span> <strong id="totalWeight">3.92 Kg</strong></li>
-                    <li><span>Total Energy:</span> <strong id="totalEnergy">1036 Wh</strong></li>
-                    <li><span>Cycle Life:</span> <strong id="cycleLife">500</strong></li>
-                    <li><span>Volumetric Density:</span> <strong id="volumetricDensity">431 Wh/L</strong></li>
+            <div style="margin: 30px 0;">
+                <h3>Step 2: Configure Your Pack</h3>
+                <p>Set the <strong>S (Series)</strong> and <strong>P (Parallel)</strong> configuration:</p>
+                <ul style="line-height: 1.8;">
+                    <li><strong>S (Series)</strong>: Increases voltage. Total Voltage = S × Cell Voltage (3.7V)</li>
+                    <li><strong>P (Parallel)</strong>: Increases capacity. Total Capacity = P × Cell Capacity</li>
                 </ul>
             </div>
 
-            <div class="bottom-row">
-                <div class="card">
-                    <h3>Voltage Drop Calculator</h3>
-                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
-                        <div style="flex:1">
-                            <label>Wire Length (cm)</label>
-                            <div class="value-box">750</div>
-                        </div>
-                        <div style="flex:1">
-                            <label>Voltage Loss</label>
-                            <div class="value-box"><span class="highlight-value">0.52V</span></div>
-                        </div>
-                    </div>
-                </div>
+            <div style="margin: 30px 0;">
+                <h3>Step 3: Review Metrics</h3>
+                <p>All calculations update automatically including:</p>
+                <ul style="line-height: 1.8;">
+                    <li>Total Voltage, Capacity, Weight</li>
+                    <li>Energy Density (Wh/L)</li>
+                    <li>Cycle Life expectations</li>
+                    <li>Estimated price and component recommendations</li>
+                </ul>
+            </div>
 
-                <div class="card">
-                    <h3>Thermal Estimator</h3>
-                    <div
-                        style="height: 100px; background: #252525; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555;">
-                        [Grafik Alanı - Chart.js kullanılabilir]
-                    </div>
-                    <div style="text-align: right; margin-top: 10px;">
-                        <span style="color: var(--accent-orange);">Est. Temp Rise: 15°C</span>
-                    </div>
+            <div style="margin: 30px 0;">
+                <h3>Step 4: Save or Export</h3>
+                <p>Use the "SAVE DESIGN" button to save your configuration for later or share with your team.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UTILITIES PAGE -->
+    <div class="page" id="page-utilities" style="display: none;">
+        <h2 style="color: var(--accent-orange); margin-bottom: 30px;">🔧 Utilities & Calculators</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="card">
+                <h3>🔌 Ohm's Law Calculator</h3>
+                <div class="input-group">
+                    <label>Voltage (V)</label>
+                    <input type="number" placeholder="Enter voltage" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Current (A)</label>
+                    <input type="number" placeholder="Enter current" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Power (W)</label>
+                    <div class="value-box">Auto-calculated</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Wire Gauge Calculator</h3>
+                <div class="input-group">
+                    <label>Current (A)</label>
+                    <input type="number" placeholder="Max current">
+                </div>
+                <div class="input-group">
+                    <label>Length (m)</label>
+                    <input type="number" placeholder="Wire length">
+                </div>
+                <div class="value-box"
+                    style="margin-top: 15px; background: var(--accent-orange); color: black; font-weight: bold;">
+                    Recommended: AWG 12
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Energy Density</h3>
+                <ul class="metrics-list">
+                    <li><span>21700 Cells:</span> <strong>~250 Wh/kg</strong></li>
+                    <li><span>18650 Cells:</span> <strong>~220 Wh/kg</strong></li>
+                    <li><span>LiFePO4:</span> <strong>~160 Wh/kg</strong></li>
+                    <li><span>Lead Acid:</span> <strong>~40 Wh/kg</strong></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🌡️ Temperature Converter</h3>
+                <div class="input-group">
+                    <label>Celsius (°C)</label>
+                    <input type="number" placeholder="Enter °C" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Fahrenheit (°F)</label>
+                    <input type="number" placeholder="Enter °F" step="0.1">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⏱️ Runtime Calculator</h3>
+                <div class="input-group">
+                    <label>Battery Capacity (Ah)</label>
+                    <input type="number" placeholder="Enter Ah" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Load Current (A)</label>
+                    <input type="number" placeholder="Enter A" step="0.1">
+                </div>
+                <div class="value-box" style="margin-top: 15px;">
+                    <span>Runtime:</span> <strong>-- hours</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💰 Cost per kWh</h3>
+                <div class="input-group">
+                    <label>Total Cost (€)</label>
+                    <input type="number" placeholder="Pack cost">
+                </div>
+                <div class="input-group">
+                    <label>Capacity (kWh)</label>
+                    <input type="number" placeholder="Total kWh">
+                </div>
+                <div class="value-box" style="margin-top: 15px;">
+                    <span>Cost per kWh:</span> <strong>€-- /kWh</strong>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div style="display: flex; gap: 20px; margin-top: 20px;">
-            <button class="btn-primary">SAVE DESIGN</button>
-            <button class="btn-primary" style="background:#444; color: white;">BMS WIZARD</button>
-        </div>
     </div>
 
     <script>
         // Cell specifications database
         const cellSpecs = {
             "SAMSUNG 40T": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 4.5 },
-            "Molicel INR‑21700‑P45B": { capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 5.2 },
-            "Tenpower INR21700‑40TG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 4.8 },
-            "Tenpower INR21700‑40XG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 4.8 },
-            "Eve INR21700‑40PL": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5, price: 4.6 },
+            "Molicel INR‑21700‑P45B": { capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 6.5 },
+            "Tenpower INR21700‑40TG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 5.0 },
+            "Tenpower INR21700‑40XG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 5.0 },
+            "Eve INR21700‑40PL": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5, price: 4.8 },
             "Samsung 50G": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
             "Samsung INR21700 50E": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 5.8 },
-            "LG INR21700M50LT": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.6 },
-            "Nitecore Li‑Ion 21700": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 6.0 }
+            "LG INR21700M50LT": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
+            "Nitecore Li‑Ion 21700": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 7.0 }
         };
 
         function calculateMetrics() {
@@ -481,7 +615,43 @@
 
             // Initial calculation
             calculateMetrics();
+
+            // Page navigation
+            setupPageNavigation();
         });
+
+        // Page switching function
+        function switchPage(pageName) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.style.display = 'none');
+
+            // Show selected page
+            const selectedPage = document.getElementById('page-' + pageName);
+            if (selectedPage) {
+                selectedPage.style.display = 'block';
+            }
+
+            // Update active button
+            const navButtons = document.querySelectorAll('nav button');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-page') === pageName) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Setup navigation event listeners
+        function setupPageNavigation() {
+            const navButtons = document.querySelectorAll('nav button[data-page]');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const pageName = this.getAttribute('data-page');
+                    switchPage(pageName);
+                });
+            });
+        }
     </script>
 
 </body>
