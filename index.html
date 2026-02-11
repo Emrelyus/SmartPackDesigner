@@ -310,6 +310,13 @@
                 <div class="card">
                     <h3>Target Specifications</h3>
                     <div class="input-group">
+                        <label>CELL FORMAT</label>
+                        <select id="cellFormat" class="input-select">
+                            <option value="21700">21700 (21mm x 70mm)</option>
+                            <option value="18650">18650 (18mm x 65mm)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
                         <label>NOMINAL VOLTAGE (V)</label>
                         <div class="value-box">
                             <input type="number" id="nominalVoltage" value="52" min="0" step="1">
@@ -736,15 +743,24 @@
     <script>
         // Cell specifications database
         const cellSpecs = {
-            "SAMSUNG 40T": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 4.5 },
-            "Molicel INR‑21700‑P45B": { capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 6.5 },
-            "Tenpower INR21700‑40TG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 5.0 },
-            "Tenpower INR21700‑40XG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 5.0 },
-            "Eve INR21700‑40PL": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5, price: 4.8 },
-            "Samsung 50G": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
-            "Samsung INR21700 50E": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 5.8 },
-            "LG INR21700M50LT": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
-            "Nitecore Li‑Ion 21700": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 7.0 }
+            // 21700 Cells
+            "SAMSUNG 40T": { format: "21700", capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 4.5 },
+            "Molicel INR‑21700‑P45B": { format: "21700", capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 6.5 },
+            "Tenpower INR21700‑40TG": { format: "21700", capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 5.0 },
+            "Tenpower INR21700‑40XG": { format: "21700", capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 5.0 },
+            "Eve INR21700‑40PL": { format: "21700", capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5, price: 4.8 },
+            "Samsung 50G": { format: "21700", capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
+            "Samsung INR21700 50E": { format: "21700", capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 5.8 },
+            "LG INR21700M50LT": { format: "21700", capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
+            "Nitecore Li‑Ion 21700": { format: "21700", capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 7.0 },
+
+            // 18650 Cells
+            "Samsung 30Q": { format: "18650", capacity: 3.0, voltage: 3.7, weight: 48, cycleLife: 500, volume: 11.0, price: 3.5 },
+            "Samsung 25R": { format: "18650", capacity: 2.5, voltage: 3.7, weight: 45, cycleLife: 500, volume: 11.0, price: 3.2 },
+            "LG HG2": { format: "18650", capacity: 3.0, voltage: 3.7, weight: 47, cycleLife: 500, volume: 11.0, price: 3.8 },
+            "Sony VTC6": { format: "18650", capacity: 3.0, voltage: 3.7, weight: 46, cycleLife: 500, volume: 11.0, price: 4.2 },
+            "Panasonic NCR18650B": { format: "18650", capacity: 3.4, voltage: 3.7, weight: 48, cycleLife: 500, volume: 11.0, price: 4.0 },
+            "Samsung 35E": { format: "18650", capacity: 3.5, voltage: 3.7, weight: 48, cycleLife: 800, volume: 11.0, price: 4.5 }
         };
 
         function calculateMetrics() {
@@ -806,17 +822,44 @@
             document.getElementById('nominalVoltage').value = Math.round(totalVoltage);
         }
 
+        // Update cell model options based on selected format
+        function updateCellModels() {
+            const format = document.getElementById('cellFormat').value;
+            const cellModelSelect = document.getElementById('cellModel');
+
+            // Clear existing options
+            cellModelSelect.innerHTML = '';
+
+            // Add filtered options
+            Object.keys(cellSpecs).forEach(model => {
+                if (cellSpecs[model].format === format) {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    cellModelSelect.appendChild(option);
+                }
+            });
+
+            // Recalculate after updating models
+            calculateMetrics();
+        }
+
         // Add event listeners
         document.addEventListener('DOMContentLoaded', function () {
             const seriesInput = document.getElementById('seriesCount');
             const parallelInput = document.getElementById('parallelCount');
             const cellModelSelect = document.getElementById('cellModel');
             const maxDischargeInput = document.getElementById('maxDischarge');
+            const cellFormatSelect = document.getElementById('cellFormat');
 
             seriesInput.addEventListener('input', calculateMetrics);
             parallelInput.addEventListener('input', calculateMetrics);
             cellModelSelect.addEventListener('change', calculateMetrics);
             maxDischargeInput.addEventListener('input', calculateMetrics);
+            cellFormatSelect.addEventListener('change', updateCellModels);
+
+            // Initial setup - populate cell models for default format
+            updateCellModels();
 
             // Initial calculation
             calculateMetrics();
