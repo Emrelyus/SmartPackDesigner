@@ -278,12 +278,12 @@
                 <h1>SMART PACK DESIGNER</h1>
             </div>
             <nav>
-                <button>QUICK START</button>
-                <button class="active">DASHBOARD</button>
-                <button>UTILITIES</button>
+                <button data-page="quickstart">QUICK START</button>
+                <button data-page="dashboard" class="active">DASHBOARD</button>
+                <button data-page="utilities">UTILITIES</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.0.0</div>
+                <div class="version">v1.0.1</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -341,10 +341,10 @@
                     </div>
                 </div>
                 <div class="metrics-list">
-                    <li><span>Estimated Price:</span> <span>€ ---</span></li>
-                    <li><span>Connector:</span> <span>XT60 / XT90</span></li>
-                    <li><span>Busbar:</span> <span>0.20mm x 10mm</span></li>
-                    <li><span>Est. Range:</span> <span>-- km</span></li>
+                    <li><span>Estimated Price:</span> <span id="estimatedPrice">€ ---</span></li>
+                    <li><span>Connector:</span> <span id="connector">XT60 / XT90</span></li>
+                    <li><span>Busbar:</span> <span id="busbar">0.20mm x 10mm</span></li>
+                    <li><span>Est. Range:</span> <span id="estRange">-- km</span></li>
                 </div>
             </div>
 
