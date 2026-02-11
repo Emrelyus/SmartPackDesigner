@@ -61,6 +61,76 @@
             border-bottom: 2px solid var(--accent-orange);
         }
 
+        /* Header Right Section */
+        .header-right {
+            text-align: right;
+        }
+
+        .version {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        /* Input Fields */
+        input[type="number"],
+        input[type="text"] {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .value-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-weight: bold;
+            padding: 0;
+            flex: 1;
+        }
+
+        .value-box input:focus {
+            outline: none;
+            color: var(--accent-orange);
+        }
+
+        /* Select Dropdown */
+        select {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        select option {
+            background: #2a2a2a;
+            color: var(--text-main);
+        }
+
         /* Grid Yapısı */
         .dashboard-grid {
             display: grid;
@@ -119,6 +189,34 @@
             margin: 20px 0;
             font-size: 2.5rem;
             font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .config-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-input-group input {
+            width: 80px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 10px;
+            background: #2a2a2a;
+            border: 2px solid var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .config-input-group label {
+            font-size: 2rem;
+            color: var(--accent-orange);
+            font-weight: bold;
+            margin: 0;
         }
 
         /* Metrik Tablosu */
@@ -184,8 +282,11 @@
                 <button class="active">DASHBOARD</button>
                 <button>UTILITIES</button>
             </nav>
-            <div class="connection">
-                CONNECTION <span style="color: #ff4444;">■</span>
+            <div class="header-right">
+                <div class="version">v1.0.0</div>
+                <div class="connection">
+                    CONNECTION <span style="color: #ff4444;">■</span>
+                </div>
             </div>
         </header>
 
@@ -195,19 +296,30 @@
                 <div class="input-group">
                     <label>NOMINAL VOLTAGE (V)</label>
                     <div class="value-box">
-                        <span>52</span>
+                        <input type="number" value="52" min="0" step="1">
                         <span class="unit">(V)</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>MAX DISCHARGE (A)</label>
                     <div class="value-box">
-                        <span style="color: #2ecc71;">20 / 40A</span>
+                        <input type="number" value="20" min="0" step="1" style="color: #2ecc71;">
+                        <span class="unit">/ 40A</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>CELL MODEL</label>
-                    <div class="value-box">SAMSUNG 40T</div>
+                    <select>
+                        <option value="SAMSUNG 40T" selected>SAMSUNG 40T</option>
+                        <option value="Molicel INR‑21700‑P45B">Molicel INR‑21700‑P45B</option>
+                        <option value="Tenpower INR21700‑40TG">Tenpower INR21700‑40TG</option>
+                        <option value="Tenpower INR21700‑40XG">Tenpower INR21700‑40XG</option>
+                        <option value="Eve INR21700‑40PL">Eve INR21700‑40PL</option>
+                        <option value="Samsung 50G">Samsung 50G</option>
+                        <option value="Samsung INR21700 50E">Samsung INR21700 50E</option>
+                        <option value="LG INR21700M50LT">LG INR21700M50LT</option>
+                        <option value="Nitecore Li‑Ion 21700">Nitecore Li‑Ion 21700</option>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label>CELL COUNT</label>
@@ -218,7 +330,16 @@
 
             <div class="card">
                 <h3>Pack Configuration</h3>
-                <div class="config-box">14S 4P</div>
+                <div class="config-box">
+                    <div class="config-input-group">
+                        <input type="number" value="14" min="1" max="99" step="1">
+                        <label>S</label>
+                    </div>
+                    <div class="config-input-group">
+                        <input type="number" value="4" min="1" max="99" step="1">
+                        <label>P</label>
+                    </div>
+                </div>
                 <div class="metrics-list">
                     <li><span>Estimated Price:</span> <span>€ ---</span></li>
                     <li><span>Connector:</span> <span>XT60 / XT90</span></li>
