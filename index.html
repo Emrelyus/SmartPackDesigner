@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Pack Designer - Dashboard</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="shortcut icon" type="image/png" href="logo.png">
     <style>
         :root {
             --bg-color: #121212;
@@ -160,111 +163,116 @@
 
         /* Responsive */
         @media (max-width: 900px) {
-            .dashboard-grid, .bottom-row {
+
+            .dashboard-grid,
+            .bottom-row {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <header>
-        <div class="logo-area">
-            <h1>SMART PACK DESIGNER</h1>
-        </div>
-        <nav>
-            <button>QUICK START</button>
-            <button class="active">DASHBOARD</button>
-            <button>UTILITIES</button>
-        </nav>
-        <div class="connection">
-            CONNECTION <span style="color: #ff4444;">■</span>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <h1>SMART PACK DESIGNER</h1>
+            </div>
+            <nav>
+                <button>QUICK START</button>
+                <button class="active">DASHBOARD</button>
+                <button>UTILITIES</button>
+            </nav>
+            <div class="connection">
+                CONNECTION <span style="color: #ff4444;">■</span>
+            </div>
+        </header>
 
-    <div class="dashboard-grid">
-        <div class="card">
-            <h3>Target Specifications</h3>
-            <div class="input-group">
-                <label>NOMINAL VOLTAGE (V)</label>
-                <div class="value-box">
-                    <span>52</span>
-                    <span class="unit">(V)</span>
-                </div>
-            </div>
-            <div class="input-group">
-                <label>MAX DISCHARGE (A)</label>
-                <div class="value-box">
-                    <span style="color: #2ecc71;">20 / 40A</span>
-                </div>
-            </div>
-            <div class="input-group">
-                <label>CELL MODEL</label>
-                <div class="value-box">SAMSUNG 40T</div>
-            </div>
-            <div class="input-group">
-                <label>CELL COUNT</label>
-                <div class="value-box">56</div>
-            </div>
-            <button class="btn-primary" style="background:#333; color:white;">CONFIGURATION DIAGRAM</button>
-        </div>
-
-        <div class="card">
-            <h3>Pack Configuration</h3>
-            <div class="config-box">14S 4P</div>
-            <div class="metrics-list">
-                <li><span>Estimated Price:</span> <span>€ ---</span></li>
-                <li><span>Connector:</span> <span>XT60 / XT90</span></li>
-                <li><span>Busbar:</span> <span>0.20mm x 10mm</span></li>
-                <li><span>Est. Range:</span> <span>-- km</span></li>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Estimated Metrics</h3>
-            <ul class="metrics-list">
-                <li><span>Total Voltage:</span> <strong>51.8V</strong></li>
-                <li><span>Total Capacity:</span> <strong>20Ah</strong></li>
-                <li><span>Total Weight:</span> <strong>3.92 Kg</strong></li>
-                <li><span>Total Energy:</span> <strong>1036 Wh</strong></li>
-                <li><span>Cycle Life:</span> <strong>500</strong></li>
-                <li><span>Volumetric Density:</span> <strong>431 Wh/L</strong></li>
-            </ul>
-        </div>
-
-        <div class="bottom-row">
+        <div class="dashboard-grid">
             <div class="card">
-                <h3>Voltage Drop Calculator</h3>
-                <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
-                    <div style="flex:1">
-                        <label>Wire Length (cm)</label>
-                        <div class="value-box">750</div>
+                <h3>Target Specifications</h3>
+                <div class="input-group">
+                    <label>NOMINAL VOLTAGE (V)</label>
+                    <div class="value-box">
+                        <span>52</span>
+                        <span class="unit">(V)</span>
                     </div>
-                    <div style="flex:1">
-                        <label>Voltage Loss</label>
-                        <div class="value-box"><span class="highlight-value">0.52V</span></div>
+                </div>
+                <div class="input-group">
+                    <label>MAX DISCHARGE (A)</label>
+                    <div class="value-box">
+                        <span style="color: #2ecc71;">20 / 40A</span>
                     </div>
+                </div>
+                <div class="input-group">
+                    <label>CELL MODEL</label>
+                    <div class="value-box">SAMSUNG 40T</div>
+                </div>
+                <div class="input-group">
+                    <label>CELL COUNT</label>
+                    <div class="value-box">56</div>
+                </div>
+                <button class="btn-primary" style="background:#333; color:white;">CONFIGURATION DIAGRAM</button>
+            </div>
+
+            <div class="card">
+                <h3>Pack Configuration</h3>
+                <div class="config-box">14S 4P</div>
+                <div class="metrics-list">
+                    <li><span>Estimated Price:</span> <span>€ ---</span></li>
+                    <li><span>Connector:</span> <span>XT60 / XT90</span></li>
+                    <li><span>Busbar:</span> <span>0.20mm x 10mm</span></li>
+                    <li><span>Est. Range:</span> <span>-- km</span></li>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Thermal Estimator</h3>
-                <div style="height: 100px; background: #252525; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555;">
-                    [Grafik Alanı - Chart.js kullanılabilir]
+                <h3>Estimated Metrics</h3>
+                <ul class="metrics-list">
+                    <li><span>Total Voltage:</span> <strong>51.8V</strong></li>
+                    <li><span>Total Capacity:</span> <strong>20Ah</strong></li>
+                    <li><span>Total Weight:</span> <strong>3.92 Kg</strong></li>
+                    <li><span>Total Energy:</span> <strong>1036 Wh</strong></li>
+                    <li><span>Cycle Life:</span> <strong>500</strong></li>
+                    <li><span>Volumetric Density:</span> <strong>431 Wh/L</strong></li>
+                </ul>
+            </div>
+
+            <div class="bottom-row">
+                <div class="card">
+                    <h3>Voltage Drop Calculator</h3>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
+                        <div style="flex:1">
+                            <label>Wire Length (cm)</label>
+                            <div class="value-box">750</div>
+                        </div>
+                        <div style="flex:1">
+                            <label>Voltage Loss</label>
+                            <div class="value-box"><span class="highlight-value">0.52V</span></div>
+                        </div>
+                    </div>
                 </div>
-                <div style="text-align: right; margin-top: 10px;">
-                    <span style="color: var(--accent-orange);">Est. Temp Rise: 15°C</span>
+
+                <div class="card">
+                    <h3>Thermal Estimator</h3>
+                    <div
+                        style="height: 100px; background: #252525; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555;">
+                        [Grafik Alanı - Chart.js kullanılabilir]
+                    </div>
+                    <div style="text-align: right; margin-top: 10px;">
+                        <span style="color: var(--accent-orange);">Est. Temp Rise: 15°C</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div style="display: flex; gap: 20px; margin-top: 20px;">
-        <button class="btn-primary">SAVE DESIGN</button>
-        <button class="btn-primary" style="background:#444; color: white;">BMS WIZARD</button>
+        <div style="display: flex; gap: 20px; margin-top: 20px;">
+            <button class="btn-primary">SAVE DESIGN</button>
+            <button class="btn-primary" style="background:#444; color: white;">BMS WIZARD</button>
+        </div>
     </div>
-</div>
 
 </body>
+
 </html>
