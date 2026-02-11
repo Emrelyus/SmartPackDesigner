@@ -296,7 +296,7 @@
                 <button data-page="livedata">LIVE DATA</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.3.0</div>
+                <div class="version">v1.3.1</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -547,41 +547,74 @@
                 onclick="switchPage('dashboard')">← Back to Dashboard</button>
         </div>
 
-        <div class="card">
-            <h2 style="color: var(--accent-orange); margin-top: 0;">📊 Battery Pack Configuration</h2>
-            <div style="text-align: center; margin: 20px 0;">
-                <h3 id="diagram-config" style="color: var(--text-main);">14S 4P Configuration</h3>
-                <p style="color: var(--text-dim);">Total Cells: <span id="diagram-total-cells">56</span></p>
-            </div>
 
-            <!-- SVG Canvas for battery diagram -->
-            <div style="background: #1a1a1a; padding: 30px; border-radius: 12px; overflow: auto;">
-                <svg id="battery-diagram" width="100%" height="600" style="display: block; margin: 0 auto;">
-                    <!-- Battery cells will be drawn here by JavaScript -->
-                </svg>
-            </div>
+        <h2 style="color: var(--accent-orange); margin-bottom: 20px;">📊 Battery Pack Configuration</h2>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h3 id="diagram-config" style="color: var(--text-main); margin: 10px 0;">14S 4P Configuration</h3>
+            <p style="color: var(--text-dim);">Total Cells: <span id="diagram-total-cells">56</span></p>
+        </div>
 
-            <div style="margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px;">
-                <h3 style="color: var(--accent-orange); margin-top: 0;">Legend:</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div
-                            style="width: 40px; height: 60px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 5px; border: 2px solid #d68910;">
+        <!-- Two Column Layout -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <!-- Left Column - Diagram -->
+            <div class="card">
+                <h3>Pack Diagram</h3>
+
+                <!-- SVG Canvas for battery diagram -->
+                <div style="background: #1a1a1a; padding: 30px; border-radius: 12px; overflow: auto;">
+                    <svg id="battery-diagram" width="100%" height="600" style="display: block; margin: 0 auto;">
+                        <!-- Battery cells will be drawn here by JavaScript -->
+                    </svg>
+                </div>
+
+                <div style="margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px;">
+                    <h3 style="color: var(--accent-orange); margin-top: 0;">Legend:</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div
+                                style="width: 40px; height: 60px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 5px; border: 2px solid #d68910;">
+                            </div>
+                            <span>21700 Cell (3.7V)</span>
                         </div>
-                        <span>21700 Cell (3.7V)</span>
+                        <div>
+                            <p style="margin: 5px 0;"><strong style="color: #e74c3c;">Series (S):</strong> Vertical red
+                                connections increase voltage</p>
+                            <p style="margin: 5px 0;"><strong style="color: #2ecc71;">Parallel (P):</strong> Horizontal
+                                green connections increase capacity</p>
+                        </div>
+                        <div>
+                            <p style="margin: 5px 0;"><strong style="color: #e74c3c;">+ Terminal:</strong> Red positive
+                                terminal (right side)</p>
+                            <p style="margin: 5px 0;"><strong style="color: #3498db;">− Terminal:</strong> Blue negative
+                                terminal (left side)</p>
+                        </div>
                     </div>
-                    <div>
-                        <p style="margin: 5px 0;"><strong style="color: #e74c3c;">Series (S):</strong> Vertical red
-                            connections increase voltage</p>
-                        <p style="margin: 5px 0;"><strong style="color: #2ecc71;">Parallel (P):</strong> Horizontal
-                            green connections increase capacity</p>
-                    </div>
-                    <div>
-                        <p style="margin: 5px 0;"><strong style="color: #e74c3c;">+ Terminal:</strong> Red positive
-                            terminal (right side)</p>
-                        <p style="margin: 5px 0;"><strong style="color: #3498db;">− Terminal:</strong> Blue negative
-                            terminal (left side)</p>
-                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Estimated Metrics -->
+            <div>
+                <div class="card">
+                    <h3>Estimated Metrics</h3>
+                    <ul class="metrics-list">
+                        <li><span>Total Voltage:</span> <strong id="diagram-totalVoltage">51.8V</strong></li>
+                        <li><span>Total Capacity:</span> <strong id="diagram-totalCapacity">20Ah</strong></li>
+                        <li><span>Total Weight:</span> <strong id="diagram-totalWeight">3.92 Kg</strong></li>
+                        <li><span>Total Energy:</span> <strong id="diagram-totalEnergy">1036 Wh</strong></li>
+                        <li><span>Cycle Life:</span> <strong id="diagram-cycleLife">500</strong></li>
+                        <li><span>Volumetric Density:</span> <strong id="diagram-volumetricDensity">431 Wh/L</strong>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h3>Pack Configuration</h3>
+                    <ul class="metrics-list">
+                        <li><span>Estimated Price:</span> <span id="diagram-estimatedPrice">€ ---</span></li>
+                        <li><span>Connector:</span> <span id="diagram-connector">XT60</span></li>
+                        <li><span>Busbar:</span> <span id="diagram-busbar">0.20mm x 10mm</span></li>
+                        <li><span>Est. Range:</span> <span id="diagram-estRange">-- km</span></li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -795,6 +828,18 @@
             // Update diagram info
             document.getElementById('diagram-config').textContent = S + 'S ' + P + 'P Configuration';
             document.getElementById('diagram-total-cells').textContent = S * P;
+
+            // Copy metrics from dashboard to diagram page
+            document.getElementById('diagram-totalVoltage').textContent = document.getElementById('totalVoltage').textContent;
+            document.getElementById('diagram-totalCapacity').textContent = document.getElementById('totalCapacity').textContent;
+            document.getElementById('diagram-totalWeight').textContent = document.getElementById('totalWeight').textContent;
+            document.getElementById('diagram-totalEnergy').textContent = document.getElementById('totalEnergy').textContent;
+            document.getElementById('diagram-cycleLife').textContent = document.getElementById('cycleLife').textContent;
+            document.getElementById('diagram-volumetricDensity').textContent = document.getElementById('volumetricDensity').textContent;
+            document.getElementById('diagram-estimatedPrice').textContent = document.getElementById('estimatedPrice').textContent;
+            document.getElementById('diagram-connector').textContent = document.getElementById('connector').textContent;
+            document.getElementById('diagram-busbar').textContent = document.getElementById('busbar').textContent;
+            document.getElementById('diagram-estRange').textContent = document.getElementById('estRange').textContent;
 
             // Draw the diagram
             drawBatteryDiagram(S, P);
