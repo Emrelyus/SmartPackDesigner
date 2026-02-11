@@ -293,9 +293,10 @@
                 <button data-page="quickstart">QUICK START</button>
                 <button data-page="dashboard" class="active">DASHBOARD</button>
                 <button data-page="utilities">UTILITIES</button>
+                <button data-page="livedata">LIVE DATA</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.2.1</div>
+                <div class="version">v1.3.0</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -581,6 +582,79 @@
                         <p style="margin: 5px 0;"><strong style="color: #3498db;">− Terminal:</strong> Blue negative
                             terminal (left side)</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIVE DATA PAGE -->
+    <div class="page" id="page-livedata" style="display: none;">
+        <h2 style="color: var(--accent-orange); margin-bottom: 30px;">📡 Live Battery Pack Data</h2>
+
+        <!-- Connection Warning -->
+        <div class="card"
+            style="background: linear-gradient(135deg, #c0392b, #e74c3c); border: 2px solid #e74c3c; text-align: center; padding: 40px;">
+            <h2 style="color: white; margin-top: 0; font-size: 2rem;">⚠️ Please Connect Your Device</h2>
+            <p style="color: #fff; font-size: 1.2rem; margin: 20px 0;">No battery pack is currently connected to the
+                system.</p>
+            <p style="color: #ecf0f1; margin: 10px 0;">To view live data, please connect your Smart Pack via:</p>
+            <ul style="list-style: none; padding: 0; margin: 20px 0; color: #ecf0f1; font-size: 1.1rem;">
+                <li>✓ USB Connection</li>
+                <li>✓ Bluetooth Module</li>
+                <li>✓ WiFi Gateway</li>
+            </ul>
+            <button class="btn-primary"
+                style="background: white; color: #e74c3c; margin-top: 20px; border: 2px solid white;">Connect
+                Device</button>
+        </div>
+
+        <!-- Live Data Preview (Hidden until connected) -->
+        <div style="display: none;">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
+                <div class="card">
+                    <h3>⚡ Pack Voltage</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; color: var(--accent-orange); font-weight: bold;">51.8V</div>
+                        <p style="color: var(--text-dim);">Normal Range</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔋 State of Charge</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; color: #2ecc71; font-weight: bold;">87%</div>
+                        <div
+                            style="background: #2a2a2a; height: 20px; border-radius: 10px; margin-top: 10px; overflow: hidden;">
+                            <div
+                                style="background: linear-gradient(90deg, #2ecc71, #27ae60); height: 100%; width: 87%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🌡️ Temperature</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; color: #f39c12; font-weight: bold;">32°C</div>
+                        <p style="color: var(--text-dim);">Optimal</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>⚡ Current Flow</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; color: #3498db; font-weight: bold;">12.3A</div>
+                        <p style="color: var(--text-dim);">Discharging</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h3>📊 Cell Voltages</h3>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; margin-top: 20px;">
+                    <!-- Cell voltage indicators would be generated here -->
                 </div>
             </div>
         </div>
