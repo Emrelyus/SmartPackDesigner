@@ -295,7 +295,7 @@
                 <button data-page="utilities">UTILITIES</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.1.2</div>
+                <div class="version">v1.2.0</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -339,7 +339,8 @@
                         <label>CELL COUNT</label>
                         <div class="value-box" id="cellCount">56</div>
                     </div>
-                    <button class="btn-primary" style="background:#333; color:white;">CONFIGURATION DIAGRAM</button>
+                    <button class="btn-primary" style="background:#333; color:white;"
+                        onclick="showDiagram()">CONFIGURATION DIAGRAM</button>
                 </div>
 
                 <div class="card">
@@ -538,6 +539,47 @@
         </div>
     </div>
 
+    <!-- CONFIGURATION DIAGRAM PAGE -->
+    <div class="page" id="page-diagram" style="display: none;">
+        <div style="margin-bottom: 20px;">
+            <button class="btn-primary" style="background:#444; color: white; width: auto; padding: 10px 20px;"
+                onclick="switchPage('dashboard')">← Back to Dashboard</button>
+        </div>
+
+        <div class="card">
+            <h2 style="color: var(--accent-orange); margin-top: 0;">📊 Battery Pack Configuration</h2>
+            <div style="text-align: center; margin: 20px 0;">
+                <h3 id="diagram-config" style="color: var(--text-main);">14S 4P Configuration</h3>
+                <p style="color: var(--text-dim);">Total Cells: <span id="diagram-total-cells">56</span></p>
+            </div>
+
+            <!-- SVG Canvas for battery diagram -->
+            <div style="background: #1a1a1a; padding: 30px; border-radius: 12px; overflow: auto;">
+                <svg id="battery-diagram" width="100%" height="600" style="display: block; margin: 0 auto;">
+                    <!-- Battery cells will be drawn here by JavaScript -->
+                </svg>
+            </div>
+
+            <div style="margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px;">
+                <h3 style="color: var(--accent-orange); margin-top: 0;">Legend:</h3>
+                <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div
+                            style="width: 40px; height: 60px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 5px; border: 2px solid #d68910;">
+                        </div>
+                        <span>21700 Cell (3.7V)</span>
+                    </div>
+                    <div>
+                        <p style="margin: 5px 0;"><strong>Series (S):</strong> Cells connected vertically increase
+                            voltage</p>
+                        <p style="margin: 5px 0;"><strong>Parallel (P):</strong> Cells connected horizontally increase
+                            capacity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
 
     <script>
@@ -663,6 +705,153 @@
                     switchPage(pageName);
                 });
             });
+        }
+
+        // Show battery pack diagram
+        function showDiagram() {
+            const S = parseInt(document.getElementById('seriesCount').value) || 14;
+            const P = parseInt(document.getElementById('parallelCount').value) || 4;
+
+            // Update diagram info
+            document.getElementById('diagram-config').textContent = S + 'S ' + P + 'P Configuration';
+            document.getElementById('diagram-total-cells').textContent = S * P;
+
+            // Draw the diagram
+            drawBatteryDiagram(S, P);
+
+            // Switch to diagram page
+            switchPage('diagram');
+        }
+
+        // Draw battery pack diagram in SVG
+        function drawBatteryDiagram(S, P) {
+            const svg = document.getElementById('battery-diagram');
+
+            // Clear existing content
+            svg.innerHTML = '';
+
+            // Cell dimensions
+            const cellWidth = 40;
+            const cellHeight = 70;
+            const cellGapX = 15;
+            const cellGapY = 15;
+            const cellRadius = 5;
+
+            // Calculate SVG dimensions
+            const totalWidth = P * cellWidth + (P - 1) * cellGapX + 100;
+            const totalHeight = S * cellHeight + (S - 1) * cellGapY + 100;
+
+            // Set viewBox to auto-size
+            svg.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
+            svg.setAttribute('height', Math.min(totalHeight, 800));
+
+            const startX = 50;
+            const startY = 50;
+
+            // Draw cells
+            for (let row = 0; row < S; row++) {
+                for (let col = 0; col < P; col++) {
+                    const x = startX + col * (cellWidth + cellGapX);
+                    const y = startY + row * (cellHeight + cellGapY);
+
+                    // Create cell group
+                    const cellGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+                    // Create gradient for each cell
+                    const gradientId = 'grad-' + row + '-' + col;
+                    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                    const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+                    gradient.setAttribute('id', gradientId);
+                    gradient.setAttribute('x1', '0%');
+                    gradient.setAttribute('y1', '0%');
+                    gradient.setAttribute('x2', '100%');
+                    gradient.setAttribute('y2', '100%');
+
+                    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                    stop1.setAttribute('offset', '0%');
+                    stop1.setAttribute('style', 'stop-color:#f39c12;stop-opacity:1');
+
+                    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                    stop2.setAttribute('offset', '100%');
+                    stop2.setAttribute('style', 'stop-color:#e67e22;stop-opacity:1');
+
+                    gradient.appendChild(stop1);
+                    gradient.appendChild(stop2);
+                    defs.appendChild(gradient);
+                    svg.appendChild(defs);
+
+                    // Draw cell rectangle
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x);
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('width', cellWidth);
+                    rect.setAttribute('height', cellHeight);
+                    rect.setAttribute('rx', cellRadius);
+                    rect.setAttribute('fill', 'url(#' + gradientId + ')');
+                    rect.setAttribute('stroke', '#d68910');
+                    rect.setAttribute('stroke-width', '2');
+
+                    cellGroup.appendChild(rect);
+
+                    // Add cell number text
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x + cellWidth / 2);
+                    text.setAttribute('y', y + cellHeight / 2);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('dominant-baseline', 'middle');
+                    text.setAttribute('fill', '#000');
+                    text.setAttribute('font-size', '10');
+                    text.setAttribute('font-weight', 'bold');
+                    text.textContent = (row * P + col + 1);
+
+                    cellGroup.appendChild(text);
+                    svg.appendChild(cellGroup);
+
+                    // Draw parallel connections (horizontal)
+                    if (col < P - 1) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', x + cellWidth);
+                        line.setAttribute('y1', y + cellHeight / 2);
+                        line.setAttribute('x2', x + cellWidth + cellGapX);
+                        line.setAttribute('y2', y + cellHeight / 2);
+                        line.setAttribute('stroke', '#2ecc71');
+                        line.setAttribute('stroke-width', '3');
+                        svg.appendChild(line);
+                    }
+
+                    // Draw series connections (vertical)
+                    if (row < S - 1) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', x + cellWidth / 2);
+                        line.setAttribute('y1', y + cellHeight);
+                        line.setAttribute('x2', x + cellWidth / 2);
+                        line.setAttribute('y2', y + cellHeight + cellGapY);
+                        line.setAttribute('stroke', '#e74c3c');
+                        line.setAttribute('stroke-width', '3');
+                        svg.appendChild(line);
+                    }
+                }
+            }
+
+            // Add labels
+            const seriesLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            seriesLabel.setAttribute('x', '10');
+            seriesLabel.setAttribute('y', startY + (S * cellHeight + (S - 1) * cellGapY) / 2);
+            seriesLabel.setAttribute('fill', '#e74c3c');
+            seriesLabel.setAttribute('font-size', '14');
+            seriesLabel.setAttribute('font-weight', 'bold');
+            seriesLabel.textContent = S + 'S';
+            svg.appendChild(seriesLabel);
+
+            const parallelLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            parallelLabel.setAttribute('x', startX + (P * cellWidth + (P - 1) * cellGapX) / 2);
+            parallelLabel.setAttribute('y', '30');
+            parallelLabel.setAttribute('text-anchor', 'middle');
+            parallelLabel.setAttribute('fill', '#2ecc71');
+            parallelLabel.setAttribute('font-size', '14');
+            parallelLabel.setAttribute('font-weight', 'bold');
+            parallelLabel.textContent = P + 'P';
+            svg.appendChild(parallelLabel);
         }
     </script>
 
