@@ -296,20 +296,20 @@
                 <div class="input-group">
                     <label>NOMINAL VOLTAGE (V)</label>
                     <div class="value-box">
-                        <input type="number" value="52" min="0" step="1">
+                        <input type="number" id="nominalVoltage" value="52" min="0" step="1">
                         <span class="unit">(V)</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>MAX DISCHARGE (A)</label>
                     <div class="value-box">
-                        <input type="number" value="20" min="0" step="1" style="color: #2ecc71;">
+                        <input type="number" id="maxDischarge" value="20" min="0" step="1" style="color: #2ecc71;">
                         <span class="unit">/ 40A</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>CELL MODEL</label>
-                    <select>
+                    <select id="cellModel">
                         <option value="SAMSUNG 40T" selected>SAMSUNG 40T</option>
                         <option value="Molicel INR‑21700‑P45B">Molicel INR‑21700‑P45B</option>
                         <option value="Tenpower INR21700‑40TG">Tenpower INR21700‑40TG</option>
@@ -323,7 +323,7 @@
                 </div>
                 <div class="input-group">
                     <label>CELL COUNT</label>
-                    <div class="value-box">56</div>
+                    <div class="value-box" id="cellCount">56</div>
                 </div>
                 <button class="btn-primary" style="background:#333; color:white;">CONFIGURATION DIAGRAM</button>
             </div>
@@ -332,11 +332,11 @@
                 <h3>Pack Configuration</h3>
                 <div class="config-box">
                     <div class="config-input-group">
-                        <input type="number" value="14" min="1" max="99" step="1">
+                        <input type="number" id="seriesCount" value="14" min="1" max="99" step="1">
                         <label>S</label>
                     </div>
                     <div class="config-input-group">
-                        <input type="number" value="4" min="1" max="99" step="1">
+                        <input type="number" id="parallelCount" value="4" min="1" max="99" step="1">
                         <label>P</label>
                     </div>
                 </div>
@@ -351,12 +351,12 @@
             <div class="card">
                 <h3>Estimated Metrics</h3>
                 <ul class="metrics-list">
-                    <li><span>Total Voltage:</span> <strong>51.8V</strong></li>
-                    <li><span>Total Capacity:</span> <strong>20Ah</strong></li>
-                    <li><span>Total Weight:</span> <strong>3.92 Kg</strong></li>
-                    <li><span>Total Energy:</span> <strong>1036 Wh</strong></li>
-                    <li><span>Cycle Life:</span> <strong>500</strong></li>
-                    <li><span>Volumetric Density:</span> <strong>431 Wh/L</strong></li>
+                    <li><span>Total Voltage:</span> <strong id="totalVoltage">51.8V</strong></li>
+                    <li><span>Total Capacity:</span> <strong id="totalCapacity">20Ah</strong></li>
+                    <li><span>Total Weight:</span> <strong id="totalWeight">3.92 Kg</strong></li>
+                    <li><span>Total Energy:</span> <strong id="totalEnergy">1036 Wh</strong></li>
+                    <li><span>Cycle Life:</span> <strong id="cycleLife">500</strong></li>
+                    <li><span>Volumetric Density:</span> <strong id="volumetricDensity">431 Wh/L</strong></li>
                 </ul>
             </div>
 
@@ -393,6 +393,66 @@
             <button class="btn-primary" style="background:#444; color: white;">BMS WIZARD</button>
         </div>
     </div>
+
+    <script>
+        // Cell specifications database
+        const cellSpecs = {
+            "SAMSUNG 40T": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5 },
+            "Molicel INR‑21700‑P45B": { capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5 },
+            "Tenpower INR21700‑40TG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5 },
+            "Tenpower INR21700‑40XG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5 },
+            "Eve INR21700‑40PL": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5 },
+            "Samsung 50G": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5 },
+            "Samsung INR21700 50E": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5 },
+            "LG INR21700M50LT": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5 },
+            "Nitecore Li‑Ion 21700": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5 }
+        };
+
+        function calculateMetrics() {
+            // Get input values
+            const S = parseInt(document.getElementById('seriesCount').value) || 0;
+            const P = parseInt(document.getElementById('parallelCount').value) || 0;
+            const cellModel = document.getElementById('cellModel').value;
+            const cell = cellSpecs[cellModel];
+
+            if (!cell) return;
+
+            // Calculate metrics
+            const totalCells = S * P;
+            const totalVoltage = (S * cell.voltage).toFixed(1);
+            const totalCapacity = (P * cell.capacity).toFixed(1);
+            const totalWeight = ((totalCells * cell.weight) / 1000).toFixed(2);
+            const totalEnergy = (totalVoltage * totalCapacity).toFixed(0);
+            const totalVolume = (totalCells * cell.volume / 1000).toFixed(2); // in Liters
+            const volumetricDensity = (totalEnergy / totalVolume).toFixed(0);
+
+            // Update display
+            document.getElementById('cellCount').textContent = totalCells;
+            document.getElementById('totalVoltage').textContent = totalVoltage + 'V';
+            document.getElementById('totalCapacity').textContent = totalCapacity + 'Ah';
+            document.getElementById('totalWeight').textContent = totalWeight + ' Kg';
+            document.getElementById('totalEnergy').textContent = totalEnergy + ' Wh';
+            document.getElementById('cycleLife').textContent = cell.cycleLife;
+            document.getElementById('volumetricDensity').textContent = volumetricDensity + ' Wh/L';
+
+            // Update nominal voltage input to match calculated voltage
+            document.getElementById('nominalVoltage').value = Math.round(totalVoltage);
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            const seriesInput = document.getElementById('seriesCount');
+            const parallelInput = document.getElementById('parallelCount');
+            const cellModelSelect = document.getElementById('cellModel');
+
+            seriesInput.addEventListener('input', calculateMetrics);
+            parallelInput.addEventListener('input', calculateMetrics);
+            cellModelSelect.addEventListener('change', calculateMetrics);
+
+            // Initial calculation
+            calculateMetrics();
+        });
+    </script>
 
 </body>
 
