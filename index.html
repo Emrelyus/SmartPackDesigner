@@ -295,7 +295,7 @@
                 <button data-page="utilities">UTILITIES</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.2.0</div>
+                <div class="version">v1.2.1</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -562,7 +562,7 @@
 
             <div style="margin-top: 20px; padding: 20px; background: #252525; border-radius: 8px;">
                 <h3 style="color: var(--accent-orange); margin-top: 0;">Legend:</h3>
-                <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div
                             style="width: 40px; height: 60px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 5px; border: 2px solid #d68910;">
@@ -570,10 +570,16 @@
                         <span>21700 Cell (3.7V)</span>
                     </div>
                     <div>
-                        <p style="margin: 5px 0;"><strong>Series (S):</strong> Cells connected vertically increase
-                            voltage</p>
-                        <p style="margin: 5px 0;"><strong>Parallel (P):</strong> Cells connected horizontally increase
-                            capacity</p>
+                        <p style="margin: 5px 0;"><strong style="color: #e74c3c;">Series (S):</strong> Vertical red
+                            connections increase voltage</p>
+                        <p style="margin: 5px 0;"><strong style="color: #2ecc71;">Parallel (P):</strong> Horizontal
+                            green connections increase capacity</p>
+                    </div>
+                    <div>
+                        <p style="margin: 5px 0;"><strong style="color: #e74c3c;">+ Terminal:</strong> Red positive
+                            terminal (right side)</p>
+                        <p style="margin: 5px 0;"><strong style="color: #3498db;">− Terminal:</strong> Blue negative
+                            terminal (left side)</p>
                     </div>
                 </div>
             </div>
@@ -852,6 +858,103 @@
             parallelLabel.setAttribute('font-weight', 'bold');
             parallelLabel.textContent = P + 'P';
             svg.appendChild(parallelLabel);
+
+            // Add pack terminals (+ and -)
+            const terminalSize = 25;
+            const terminalY = startY + S * cellHeight + (S - 1) * cellGapY + 40;
+
+            // Negative terminal (left side, first cell)
+            const negTerminalX = startX;
+
+            // Draw negative terminal
+            const negTerminal = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            negTerminal.setAttribute('x', negTerminalX - 5);
+            negTerminal.setAttribute('y', terminalY);
+            negTerminal.setAttribute('width', terminalSize);
+            negTerminal.setAttribute('height', terminalSize);
+            negTerminal.setAttribute('fill', '#3498db');
+            negTerminal.setAttribute('stroke', '#2980b9');
+            negTerminal.setAttribute('stroke-width', '2');
+            negTerminal.setAttribute('rx', '3');
+            svg.appendChild(negTerminal);
+
+            // Negative symbol
+            const negSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            negSymbol.setAttribute('x', negTerminalX + 7);
+            negSymbol.setAttribute('y', terminalY + 17);
+            negSymbol.setAttribute('text-anchor', 'middle');
+            negSymbol.setAttribute('fill', '#fff');
+            negSymbol.setAttribute('font-size', '18');
+            negSymbol.setAttribute('font-weight', 'bold');
+            negSymbol.textContent = '−';
+            svg.appendChild(negSymbol);
+
+            // Wire from bottom of first cell to negative terminal
+            const negWire = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            negWire.setAttribute('x1', startX + cellWidth / 2);
+            negWire.setAttribute('y1', startY + S * cellHeight + (S - 1) * cellGapY);
+            negWire.setAttribute('x2', negTerminalX + 7);
+            negWire.setAttribute('y2', terminalY);
+            negWire.setAttribute('stroke', '#3498db');
+            negWire.setAttribute('stroke-width', '4');
+            svg.appendChild(negWire);
+
+            // Positive terminal (right side, last cell)
+            const posTerminalX = startX + (P - 1) * (cellWidth + cellGapX) + cellWidth - 5;
+
+            // Draw positive terminal
+            const posTerminal = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            posTerminal.setAttribute('x', posTerminalX - 10);
+            posTerminal.setAttribute('y', terminalY);
+            posTerminal.setAttribute('width', terminalSize);
+            posTerminal.setAttribute('height', terminalSize);
+            posTerminal.setAttribute('fill', '#e74c3c');
+            posTerminal.setAttribute('stroke', '#c0392b');
+            posTerminal.setAttribute('stroke-width', '2');
+            posTerminal.setAttribute('rx', '3');
+            svg.appendChild(posTerminal);
+
+            // Positive symbol
+            const posSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            posSymbol.setAttribute('x', posTerminalX + 2);
+            posSymbol.setAttribute('y', terminalY + 17);
+            posSymbol.setAttribute('text-anchor', 'middle');
+            posSymbol.setAttribute('fill', '#fff');
+            posSymbol.setAttribute('font-size', '18');
+            posSymbol.setAttribute('font-weight', 'bold');
+            posSymbol.textContent = '+';
+            svg.appendChild(posSymbol);
+
+            // Wire from bottom of last cell to positive terminal
+            const posWire = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            posWire.setAttribute('x1', posTerminalX - cellWidth / 2 + 15);
+            posWire.setAttribute('y1', startY + S * cellHeight + (S - 1) * cellGapY);
+            posWire.setAttribute('x2', posTerminalX + 2);
+            posWire.setAttribute('y2', terminalY);
+            posWire.setAttribute('stroke', '#e74c3c');
+            posWire.setAttribute('stroke-width', '4');
+            svg.appendChild(posWire);
+
+            // Add labels for terminals
+            const negLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            negLabel.setAttribute('x', negTerminalX + 7);
+            negLabel.setAttribute('y', terminalY + terminalSize + 15);
+            negLabel.setAttribute('text-anchor', 'middle');
+            negLabel.setAttribute('fill', '#3498db');
+            negLabel.setAttribute('font-size', '12');
+            negLabel.setAttribute('font-weight', 'bold');
+            negLabel.textContent = 'NEGATIVE';
+            svg.appendChild(negLabel);
+
+            const posLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            posLabel.setAttribute('x', posTerminalX + 2);
+            posLabel.setAttribute('y', terminalY + terminalSize + 15);
+            posLabel.setAttribute('text-anchor', 'middle');
+            posLabel.setAttribute('fill', '#e74c3c');
+            posLabel.setAttribute('font-size', '12');
+            posLabel.setAttribute('font-weight', 'bold');
+            posLabel.textContent = 'POSITIVE';
+            svg.appendChild(posLabel);
         }
     </script>
 
