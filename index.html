@@ -283,7 +283,7 @@
                 <button data-page="utilities">UTILITIES</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.0.1</div>
+                <div class="version">v1.0.2</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -397,21 +397,22 @@
     <script>
         // Cell specifications database
         const cellSpecs = {
-            "SAMSUNG 40T": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5 },
-            "Molicel INR‑21700‑P45B": { capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5 },
-            "Tenpower INR21700‑40TG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5 },
-            "Tenpower INR21700‑40XG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5 },
-            "Eve INR21700‑40PL": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5 },
-            "Samsung 50G": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5 },
-            "Samsung INR21700 50E": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5 },
-            "LG INR21700M50LT": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5 },
-            "Nitecore Li‑Ion 21700": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5 }
+            "SAMSUNG 40T": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 4.5 },
+            "Molicel INR‑21700‑P45B": { capacity: 4.5, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 5.2 },
+            "Tenpower INR21700‑40TG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 4.8 },
+            "Tenpower INR21700‑40XG": { capacity: 4.0, voltage: 3.7, weight: 68, cycleLife: 800, volume: 16.5, price: 4.8 },
+            "Eve INR21700‑40PL": { capacity: 4.0, voltage: 3.7, weight: 69, cycleLife: 800, volume: 16.5, price: 4.6 },
+            "Samsung 50G": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.5 },
+            "Samsung INR21700 50E": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 5.8 },
+            "LG INR21700M50LT": { capacity: 5.0, voltage: 3.7, weight: 69, cycleLife: 500, volume: 16.5, price: 5.6 },
+            "Nitecore Li‑Ion 21700": { capacity: 5.0, voltage: 3.7, weight: 70, cycleLife: 500, volume: 16.5, price: 6.0 }
         };
 
         function calculateMetrics() {
             // Get input values
             const S = parseInt(document.getElementById('seriesCount').value) || 0;
             const P = parseInt(document.getElementById('parallelCount').value) || 0;
+            const maxDischarge = parseInt(document.getElementById('maxDischarge').value) || 20;
             const cellModel = document.getElementById('cellModel').value;
             const cell = cellSpecs[cellModel];
 
@@ -426,6 +427,29 @@
             const totalVolume = (totalCells * cell.volume / 1000).toFixed(2); // in Liters
             const volumetricDensity = (totalEnergy / totalVolume).toFixed(0);
 
+            // Calculate price (cells + BMS + connectors + busbar + assembly)
+            const cellsCost = totalCells * cell.price;
+            const bmsCost = S * 8; // Approximate BMS cost per series cell
+            const connectorsCost = 15;
+            const busbarCost = S * 2;
+            const assemblyCost = 30;
+            const totalPrice = (cellsCost + bmsCost + connectorsCost + busbarCost + assemblyCost).toFixed(0);
+
+            // Determine connector based on max discharge
+            let connector = 'XT30';
+            if (maxDischarge > 60) connector = 'XT90';
+            else if (maxDischarge > 30) connector = 'XT60';
+            else if (maxDischarge > 15) connector = 'XT60';
+
+            // Determine busbar thickness based on current
+            let busbar = '0.15mm x 8mm';
+            if (maxDischarge > 50) busbar = '0.30mm x 12mm';
+            else if (maxDischarge > 30) busbar = '0.20mm x 10mm';
+            else if (maxDischarge > 15) busbar = '0.20mm x 8mm';
+
+            // Calculate estimated range (assuming 15Wh/km for e-bike)
+            const estRange = (totalEnergy / 15).toFixed(0);
+
             // Update display
             document.getElementById('cellCount').textContent = totalCells;
             document.getElementById('totalVoltage').textContent = totalVoltage + 'V';
@@ -434,6 +458,10 @@
             document.getElementById('totalEnergy').textContent = totalEnergy + ' Wh';
             document.getElementById('cycleLife').textContent = cell.cycleLife;
             document.getElementById('volumetricDensity').textContent = volumetricDensity + ' Wh/L';
+            document.getElementById('estimatedPrice').textContent = '€ ' + totalPrice;
+            document.getElementById('connector').textContent = connector;
+            document.getElementById('busbar').textContent = busbar;
+            document.getElementById('estRange').textContent = estRange + ' km';
 
             // Update nominal voltage input to match calculated voltage
             document.getElementById('nominalVoltage').value = Math.round(totalVoltage);
@@ -444,10 +472,12 @@
             const seriesInput = document.getElementById('seriesCount');
             const parallelInput = document.getElementById('parallelCount');
             const cellModelSelect = document.getElementById('cellModel');
+            const maxDischargeInput = document.getElementById('maxDischarge');
 
             seriesInput.addEventListener('input', calculateMetrics);
             parallelInput.addEventListener('input', calculateMetrics);
             cellModelSelect.addEventListener('change', calculateMetrics);
+            maxDischargeInput.addEventListener('input', calculateMetrics);
 
             // Initial calculation
             calculateMetrics();
