@@ -297,7 +297,7 @@
                 <button data-page="about">ABOUT</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.4.0</div>
+                <div class="version">v1.4.1</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -368,7 +368,19 @@
                         <li><span>Estimated Price:</span> <span id="estimatedPrice">€ ---</span></li>
                         <li><span>Connector:</span> <span id="connector">XT60 / XT90</span></li>
                         <li><span>Busbar:</span> <span id="busbar">0.20mm x 10mm</span></li>
-                        <li><span>Est. Range:</span> <span id="estRange">-- km</span></li>
+                        <li>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <span style="display: flex; align-items: center; gap: 5px;">
+                                    Range
+                                    <span style="font-size: 0.8em; color: var(--text-dim);">(@ <input type="number"
+                                            id="consumptionInput" value="15"
+                                            style="width: 35px; background: transparent; border: none; border-bottom: 1px solid var(--text-dim); color: var(--accent-orange); text-align: center; padding: 0;">
+                                        Wh/km)</span>:
+                                </span>
+                                <span id="estRange">-- km</span>
+                            </div>
+                        </li>
                     </div>
                 </div>
 
@@ -402,8 +414,11 @@
                     <div class="card">
                         <h3>Thermal Estimator</h3>
                         <div
-                            style="height: 100px; background: #252525; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555;">
-                            [Grafik Alanı - Chart.js kullanılabilir]
+                            style="height: 100px; background: #252525; border-radius: 8px; position: relative; overflow: hidden;">
+                            <svg id="thermal-chart" width="100%" height="100%" viewBox="0 0 300 100"
+                                preserveAspectRatio="none">
+                                <!-- Chart will be drawn by JS -->
+                            </svg>
                         </div>
                         <div style="text-align: right; margin-top: 10px;">
                             <span style="color: var(--accent-orange);">Est. Temp Rise: 15°C</span>
@@ -802,8 +817,9 @@
             else if (maxDischarge > 30) busbar = '0.20mm x 10mm';
             else if (maxDischarge > 15) busbar = '0.20mm x 8mm';
 
-            // Calculate estimated range (assuming 15Wh/km for e-bike)
-            const estRange = (totalEnergy / 15).toFixed(0);
+            // Calculate estimated range (using custom consumption Wh/km)
+            const consumption = parseFloat(document.getElementById('consumptionInput').value) || 15;
+            const estRange = (totalEnergy / consumption).toFixed(0);
 
             // Update display
             document.getElementById('cellCount').textContent = totalCells;
@@ -820,6 +836,96 @@
 
             // Update nominal voltage input to match calculated voltage
             document.getElementById('nominalVoltage').value = Math.round(totalVoltage);
+
+            // Update thermal chart
+            updateThermalChart(maxDischarge, P);
+        }
+
+        // Update thermal estimator chart
+        function updateThermalChart(current, P) {
+            const svg = document.getElementById('thermal-chart');
+            svg.innerHTML = '';
+
+            // Constants
+            const width = 300;
+            const height = 100;
+            const maxCurrentLimit = Math.max(current * 1.5, 50); // X-axis range
+            const cellCurrent = current / P;
+
+            // Thermal model: TempRise = k * (I_cell)^2
+            // k = 0.25 (approximation factor)
+            const k = 0.25;
+            const currentTempRise = k * Math.pow(cellCurrent, 2);
+
+            // Update temp text
+            const tempText = document.querySelector('.card:last-child span[style*="accent-orange"]');
+            if (tempText) tempText.textContent = `Est. Temp Rise: +${currentTempRise.toFixed(1)}°C`;
+
+            // Generate path data
+            let pathData = `M 0 ${height}`;
+            for (let i = 0; i <= width; i += 5) {
+                const i_rel = (i / width) * maxCurrentLimit; // Current at this x-coord
+                const i_cell_rel = i_rel / P;
+                const temp_rise = k * Math.pow(i_cell_rel, 2);
+
+                // Map temp to Y (0-100 scale, max temp ~60-80C)
+                const y = height - (temp_rise * 1.5); // scaling factor
+                pathData += ` L ${i} ${Math.max(0, y)}`;
+            }
+            pathData += ` L ${width} ${height} Z`;
+
+            // Create gradient
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+            gradient.setAttribute('id', 'thermalGradient');
+            gradient.setAttribute('x1', '0%');
+            gradient.setAttribute('y1', '0%');
+            gradient.setAttribute('x2', '0%');
+            gradient.setAttribute('y2', '100%');
+
+            const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop1.setAttribute('offset', '0%');
+            stop1.setAttribute('style', 'stop-color:#e74c3c;stop-opacity:0.8');
+
+            const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop2.setAttribute('offset', '100%');
+            stop2.setAttribute('style', 'stop-color:#f39c12;stop-opacity:0.2');
+
+            gradient.appendChild(stop1);
+            gradient.appendChild(stop2);
+            defs.appendChild(gradient);
+            svg.appendChild(defs);
+
+            // Draw area
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', 'url(#thermalGradient)');
+            path.setAttribute('stroke', '#e74c3c');
+            path.setAttribute('stroke-width', '2');
+            svg.appendChild(path);
+
+            // Draw current operating point line
+            const operatingX = (current / maxCurrentLimit) * width;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', operatingX);
+            line.setAttribute('y1', 0);
+            line.setAttribute('x2', operatingX);
+            line.setAttribute('y2', height);
+            line.setAttribute('stroke', '#fff');
+            line.setAttribute('stroke-dasharray', '4');
+            line.setAttribute('opacity', '0.7');
+            svg.appendChild(line);
+
+            // Draw operating point circle
+            const operatingY = height - (currentTempRise * 1.5);
+            if (operatingY > 0) {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', operatingX);
+                circle.setAttribute('cy', operatingY);
+                circle.setAttribute('r', '4');
+                circle.setAttribute('fill', '#fff');
+                svg.appendChild(circle);
+            }
         }
 
         // Update cell model options based on selected format
@@ -857,6 +963,8 @@
             cellModelSelect.addEventListener('change', calculateMetrics);
             maxDischargeInput.addEventListener('input', calculateMetrics);
             cellFormatSelect.addEventListener('change', updateCellModels);
+            // Also enable range calculation update on manual consumption input
+            document.getElementById('consumptionInput').addEventListener('input', calculateMetrics);
 
             // Initial setup - populate cell models for default format
             updateCellModels();
