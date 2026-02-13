@@ -28,6 +28,8 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding-top: 100px;
+            /* Header için boşluk */
         }
 
         /* Header Bölümü */
@@ -35,14 +37,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 20px;
-            padding-top: 10px;
+            padding: 20px 0;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
             z-index: 1000;
             background-color: var(--bg-color);
+            box-sizing: border-box;
+            /* Mobilde kenar boşlukları için */
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         .logo-area {
