@@ -348,7 +348,7 @@
                 <button data-page="about">ABOUT</button>
             </nav>
             <div class="header-right">
-                <div class="version">v1.4.3</div>
+                <div class="version" id="header-version">v---</div>
                 <div class="connection">
                     CONNECTION <span style="color: #ff4444;">■</span>
                 </div>
@@ -799,7 +799,8 @@
 
             <div style="margin-top: 40px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
                 <div style="padding: 20px; background: #252525; border-radius: 10px; min-width: 150px;">
-                    <div style="font-size: 2rem; color: var(--accent-orange); font-weight: bold;">v1.4.0</div>
+                    <div style="font-size: 2rem; color: var(--accent-orange); font-weight: bold;" id="about-version">
+                        v---</div>
                     <div style="color: var(--text-dim); margin-top: 5px;">Version</div>
                 </div>
                 <div style="padding: 20px; background: #252525; border-radius: 10px; min-width: 150px;">
@@ -807,7 +808,7 @@
                     <div style="color: var(--text-dim); margin-top: 5px;">Cell Models</div>
                 </div>
                 <div style="padding: 20px; background: #252525; border-radius: 10px; min-width: 150px;">
-                    <div style="font-size: 2rem; color: var(--accent-orange); font-weight: bold;">21700</div>
+                    <div style="font-size: 2rem; color: var(--accent-orange); font-weight: bold;">21700 / 18650</div>
                     <div style="color: var(--text-dim); margin-top: 5px;">Cell Format</div>
                 </div>
             </div>
@@ -874,6 +875,9 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
+        // Application Constants
+        const APP_VERSION = "v1.4.3";
 
         // Cell specifications database
         const cellSpecs = {
@@ -1132,6 +1136,10 @@
 
             // Page navigation
             setupPageNavigation();
+
+            // Set Application Version
+            document.getElementById('header-version').textContent = APP_VERSION;
+            document.getElementById('about-version').textContent = APP_VERSION;
         });
 
         // Page switching function
