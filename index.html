@@ -36,8 +36,13 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 20px;
+            padding-top: 10px;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--bg-color);
         }
 
         .logo-area {
@@ -1398,6 +1403,23 @@
             posLabel.setAttribute('font-weight', 'bold');
             posLabel.textContent = 'POSITIVE';
             svg.appendChild(posLabel);
+        }
+
+        // Show Under Development message on button
+        function showUnderDevelopment() {
+            const btn = document.querySelector("button[onclick='showUnderDevelopment()']");
+            if (btn) {
+                const originalText = btn.innerText;
+                btn.innerText = "🚧 Under Development";
+                btn.style.backgroundColor = "#e74c3c"; // Optional: Change color to red
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = ""; // Reset color
+                }, 2000);
+            } else {
+                alert("This feature is currently under development.");
+            }
         }
     </script>
 
